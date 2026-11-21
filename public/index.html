@@ -91,11 +91,11 @@ const rnd=(a,b)=>a+RNG()*(b-a),ri=n=>Math.floor(RNG()*n),cl=(v,a,b)=>Math.max(a,
 const angWrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 const cxOf=i=>(i+.5)*CELL;
 const renderer=new THREE.WebGLRenderer({canvas:$('c'),antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;
 const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(65,1,.5,1000),sky=new THREE.Color(0x8fd3ff);
 scene.background=sky;scene.fog=new THREE.Fog(sky,170,620);
 const hemi=new THREE.HemisphereLight(0xffffff,0x88aa88,.95);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xffffff,.85);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
+const sun=new THREE.DirectionalLight(0xffffff,.85);sun.castShadow=true;sun.shadow.mapSize.set(512,512);
 Object.assign(sun.shadow.camera,{left:-80,right:80,top:80,bottom:-80,far:320});scene.add(sun,sun.target);
 function resize(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);resize();
@@ -108,7 +108,7 @@ function cvT(s,f){const c=document.createElement('canvas');c.width=c.height=s;f(
 const SPC={'2,2':'hosp','8,8':'hosp','1,5':'pol','9,2':'arc','2,8':'park','7,5':'garden','5,5':'plaza','4,4':'garden','5,4':'garden','6,4':'garden','4,5':'garden','6,5':'garden','4,6':'garden','5,6':'garden','6,6':'garden','5,8':'garage','9,6':'dealer','9,9':'lot','1,1':'mall','9,4':'airport','1,9':'gas','7,9':'jobs','7,7':'garden','1,3':'groc','1,7':'rest','3,1':'gift','3,9':'bank','5,2':'cloth','7,1':'cafe','2,4':'guns'};
 
 /* ===== الأرض ===== */
-(function(){const G=W+200,K2=4096,k=K2/G,c=document.createElement('canvas');c.width=c.height=K2;const x=c.getContext('2d');
+(function(){const G=W+200,K2=2048,k=K2/G,c=document.createElement('canvas');c.width=c.height=K2;const x=c.getContext('2d');
 const X=v=>(v+100)*k,rc=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(X(a),X(b),w*k,h*k)};
 rc(-100,-100,G,G,'#6cc24a');
 const tileArea=(x0,z0,s,n,base)=>{const t=s/n,c0=parseInt(base.slice(1,3),16),c1=parseInt(base.slice(3,5),16),c2=parseInt(base.slice(5,7),16);
@@ -414,7 +414,7 @@ const f0=Math.floor(p0/CELL),f1=Math.floor(n[a]/CELL);if(f0!==f1){n[a]=Math.max(
 const m=n.m,k=Math.min(1,dt*6);m.position.x+=(n.cx-n.dz*n.lane-m.position.x)*k;m.position.z+=(n.cz+n.dx*n.lane-m.position.z)*k;
 let da=Math.atan2(n.dx,n.dz)-m.rotation.y;da=angWrap(da);m.rotation.y+=da*Math.min(1,dt*8);anim(m,s,false,dt)}
 function spawnWalker(){mkNPC({shirt:SHIRTS[ri(7)],pants:[0x333b55,0x6b4a2b,0x2b5a3a][ri(3)],sym:RNG()<.4?'stripe':'',jacket:RNG()<.4?0x3b3f4a:0,glasses:RNG()<.2},ri(N+1),ri(N+1),rnd(4,7))}
-for(let i=0;i<45;i++)spawnWalker();
+for(let i=0;i<30;i++)spawnWalker();
 
 /* ===== النجوم والشرطة ===== */
 function crime(n,msg){if(crimeCD>0)return;crimeCD=1.5;S.stars=Math.min(5,S.stars+n);S.lastCrime=T;toast(msg);beep(300,.2)}
@@ -440,7 +440,7 @@ function trafficAIOld(c,dt){c.x=c.axis=='x'?c.x+c.dir*c.spd*dt:c.x;c.z=c.axis=='
 function mkTraffic(){const axis=RNG()<.5?'x':'z',line=ri(N+1)*CELL,dir=RNG()<.5?1:-1;
  const c=mkCar('traffic',rnd(0,W),line,0,CARC[ri(CARC.length)]);c.kind='traffic';c.axis=axis;c.line=line;c.dir=dir;c.spd=rnd(10,16);
  if(axis=='x'){c.x=rnd(0,W);c.z=line-dir*4.5}else{c.z=rnd(0,W);c.x=line+dir*4.5}return c}
-for(let k=0;k<16;k++)mkTraffic();
+for(let k=0;k<10;k++)mkTraffic();
 
 /* ===== مهام وأوضاع ===== */
 let M=null,tgt=null,pm,started=false,RC=null,CUR=null,ci=3,ui=0,mgT=[],EV=null,TRS=null;
@@ -769,7 +769,7 @@ if(localStorage.getItem(SAVE_KEY))$('bc').style.display='inline-block';
 setInterval(()=>saveGame(),5000);addEventListener('beforeunload',saveGame);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveGame()});
 
 /* ===== الخريطة المصغرة ===== */
-const mx=$('mm').getContext('2d'),MR=65,VR=120;
+const mx=$('mm').getContext('2d'),MR=65,VR=120;let MINI_T=0;
 function mini(sn,cs){const k=MR/VR,mp=(x,z)=>{const dx=x-S.x,dz=z-S.z;return[MR+k*(dx*cs-dz*sn),MR+k*(dx*sn+dz*cs)]};
 mx.clearRect(0,0,130,130);mx.save();mx.beginPath();mx.arc(MR,MR,MR-1,0,7);mx.clip();mx.fillStyle='#3a3d46';mx.fillRect(0,0,130,130);
 blocks.forEach(b=>{mx.fillStyle=b.c;mx.beginPath();[[b.x0,b.z0],[b.x1,b.z0],[b.x1,b.z1],[b.x0,b.z1]].forEach(([x,z],i)=>{const[a,d]=mp(x,z);i?mx.lineTo(a,d):mx.moveTo(a,d)});mx.fill()});
@@ -945,7 +945,7 @@ sun.position.set(S.x+Math.cos(ang)*140,Math.max(12,sh*140),S.z+40);sun.target.po
 hemi.intensity=.2+.65*dayK;LAMPM.color.copy(LAMP_ON).lerp(LAMP_OFF,dayK);
 $('money').textContent='💰 '+Math.floor(S.money)+' ريال';$('bk').textContent='🏦 ادخار: '+Math.floor(S.bank)+' • 🏠 '+owned().length+' بيوت';
 $('veh').textContent=(S.car?'🚗 داخل السيارة • ':'')+({cit:'🧑 مواطن',doc:'🩺 طبيب',pol:'👮 شرطي'})[S.team];
-$('st').style.width=S.st+'%';$('clk').textContent='🕒 '+String(Math.floor(TOD)).padStart(2,'0')+':'+String(Math.floor((TOD%1)*60)).padStart(2,'0');mini(sn,cs);renderer.render(scene,cam)}
+$('st').style.width=S.st+'%';$('clk').textContent='🕒 '+String(Math.floor(TOD)).padStart(2,'0')+':'+String(Math.floor((TOD%1)*60)).padStart(2,'0');if((MINI_T+=dt)>.2){MINI_T=0;mini(sn,cs)}renderer.render(scene,cam)}
 const pmDummy=null;
 requestAnimationFrame(loop);
 </script>
