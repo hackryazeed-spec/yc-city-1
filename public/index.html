@@ -64,7 +64,7 @@ button.sm{font-size:16px;padding:9px 14px}
 <div id="top" class="p"><div id="mt"></div><div id="row"><div id="arrow">➤</div><div id="tm"></div></div></div>
 <div id="info" class="p"><span id="money">0</span> <span id="stars">☆☆☆☆☆</span><small id="veh"></small><small id="bk"></small><small id="clk"></small></div>
 <div id="mmw" class="p"><canvas id="mm" width="130" height="130"></canvas></div>
-<div id="btns"><button class="sm" onclick="openAI()">🤖 المساعد</button><button class="sm" onclick="openBag()">🎒 الشنطة (B)</button><button class="sm" onclick="openPhone()">📱 الجوال (P)</button><button class="sm" onclick="toggleCh()">📋 التحديات (T)</button></div>
+<div id="btns"><button class="sm" onclick="openBag()">🎒 الشنطة (B)</button><button class="sm" onclick="openPhone()">📱 الجوال (P)</button><button class="sm" onclick="toggleCh()">📋 التحديات (T)</button></div>
 <div id="chp" class="p"></div>
 <div id="evh" class="p"></div>
 <div id="dash" class="p"><span id="spd">0</span> <small id="unit">كم/س</small><div class="bar"><i id="st"></i></div></div>
@@ -606,19 +606,6 @@ function buildFountain(cx,cz){
  for(let k=0;k<4;k++){const a=k/4*Math.PI*2+.4;const bench=BX(4,.9,1.2,L(0x8a5a2b),cx+Math.cos(a)*10,.45,cz+Math.sin(a)*10);bench.rotation.y=-a;addB(cx+Math.cos(a)*10,cz+Math.sin(a)*10,4,1.2,1.35)}
 }
 
-
-/* ===== المساعد الذكي ===== */
-let AI_HIST=[];
-function openAI(){mgOpen('<h2>🤖 المساعد</h2><div id=aiLog style="text-align:right;max-height:220px;overflow:auto;font-size:15px;line-height:1.7;margin-bottom:8px">'+AI_HIST.map(m=>'<div><b>'+(m.role=='user'?'أنت':'المساعد')+':</b> '+m.content.replace(/</g,'&lt;')+'</div>').join('')+'</div><input id=aiIn placeholder="اسألني أي شيء عن اللعبة" style="width:100%;padding:8px;border-radius:8px;border:none;font:inherit;direction:rtl" onkeydown="if(event.key===\'Enter\')askAI()"><div class=gl style="margin-top:8px"><button class=sm onclick="askAI()">إرسال</button><button class=sm onclick=mgClose()>إغلاق</button></div>');
- setTimeout(()=>{const i=$('aiIn');if(i)i.focus()},50)}
-async function askAI(){const inp=$('aiIn');if(!inp)return;const t=inp.value.trim();if(!t)return;
- AI_HIST.push({role:'user',content:t});AI_HIST=AI_HIST.slice(-10);
- const log=$('aiLog');if(log)log.innerHTML+='<div><b>أنت:</b> '+t.replace(/</g,'&lt;')+'</div><div id=aiWait>...</div>';inp.value='';
- let reply='تعذّر الاتصال بالمساعد. تأكد أنك تفتح اللعبة من رابط السيرفر.';
- try{const r=await fetch('/api/ai',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:AI_HIST})});const j=await r.json();reply=j.reply||reply}catch(e){}
- AI_HIST.push({role:'assistant',content:reply});AI_HIST=AI_HIST.slice(-10);
- if($('aiWait'))$('aiWait').outerHTML='<div><b>المساعد:</b> '+reply.replace(/</g,'&lt;')+'</div>';
- const lg=$('aiLog');if(lg)lg.scrollTop=lg.scrollHeight}
 
 /* برج مراقبة المطار */
 function airTower(cx,cz){const x=cx+13.5,z=cz+12;
