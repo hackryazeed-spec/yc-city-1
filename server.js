@@ -1,11 +1,58 @@
 const express = require('express');
 const http = require('http');
+const fs = require('fs');
 const path = require('path');
 const { Server } = require('socket.io');
 
+function findGame() {
+  const candidates = [
+    path.join(__dirname, 'public', 'index.html'),
+    path.join(__dirname, 'index.html'),
+    path.join(__dirname, 'yc-gta.html')
+  ];
+  for (const f of candidates) if (fs.existsSync(f)) return f;
+  const htmlFile = fs.readdirSync(__dirname).find(f => f.endsWith('.html'));
+  return htmlFile ? path.join(__dirname, htmlFile) : null;
+}
+
+const GAME = findGame();
+console.log('Game file:', GAME || 'NOT FOUND');
+
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.use(express.json({ limit: '50kb' }));
+if (GAME) app.use(express.static(path.dirname(GAME)));
+app.get('/', (req, res) => {
+  if (GAME) res.sendFile(GAME);
+  else res.status(500).send('لم يتم العثور على ملف اللعبة (index.html) داخل المستودع');
+});
+
+// المساعد الذكي: المفتاح يُقرأ من إعدادات Render (ANTHROPIC_API_KEY)
+app.post('/api/ai', async (req, res) => {
+  const KEY = process.env.ANTHROPIC_API_KEY;
+  if (!KEY) return res.json({ reply: 'المساعد غير مفعّل بعد. صاحب السيرفر لازم يضيف ANTHROPIC_API_KEY في إعدادات Render.' });
+  try {
+    const msgs = (Array.isArray(req.body.messages) ? req.body.messages : []).slice(-10).map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: String(m.content || '').slice(0, 500)
+    })).filter(m => m.content);
+    if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return res.json({ reply: 'اكتب سؤالك أولًا.' });
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-haiku-5-5',
+        max_tokens: 300,
+        system: 'أنت المساعد الذكي داخل لعبة مدينة YC City. تكلم بالعربي باختصار وبأسلوب ودّي. تساعد اللاعب بنصائح اللعب والمدينة (المحلات، البيوت، الوظائف، المطار، محطة البنزين، الجراج، المعرض).',
+        messages: msgs
+      })
+    });
+    const j = await r.json();
+    const text = (j.content || []).map(c => c.text || '').join('').trim();
+    res.json({ reply: text || 'ما قدرت أرد الحين، جرب مرة ثانية.' });
+  } catch (e) {
+    res.json({ reply: 'تعذّر الاتصال بالمساعد الحين.' });
+  }
+});
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
