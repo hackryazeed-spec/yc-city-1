@@ -71,7 +71,7 @@ button.sm{font-size:16px;padding:9px 14px}
 <div id="help" class="p">W A S D تحرك/قيادة • Space قفز/فرامل • Shift جري/تسارع<br>E تفاعل وركوب ونزول السيارة • H البيت • T تحديات<br>اسحب الماوس لتدوير الكاميرا • العجلة تقريب • Esc إغلاق</div>
 <div id="chat" class="p" style="right:10px;bottom:12px;width:min(300px,55vw);display:none;z-index:3"><div id="chatlog" style="max-height:120px;overflow:auto;font-size:13px;line-height:1.5"></div><input id="chatIn" placeholder="اكتب رسالة واضغط Enter" maxlength="120" style="width:100%;margin-top:4px;padding:6px 8px;border-radius:8px;border:none;font:inherit;direction:rtl"></div>
 <div id="prompt"></div><div id="toast"></div>
-<div class="tb" id="bj">⤒</div><div class="tb" id="be">E</div><div class="tb" id="br">🏃</div><div id="jr"><i></i></div>
+<div class="tb" id="bj">⤒</div><div class="tb" id="be">E</div><div class="tb" id="br">🏃</div><div class="tb" id="bf" style="right:110px;bottom:150px;background:rgba(255,80,80,.5)">🔫</div><div id="jr"><i></i></div>
 <div id="mg"><div id="mgb"></div></div>
 <div id="start">
 <h1>YC CITY 2.0</h1>
@@ -108,7 +108,7 @@ function cvT(s,f){const c=document.createElement('canvas');c.width=c.height=s;f(
 const SPC={'2,2':'hosp','8,8':'hosp','1,5':'pol','9,2':'arc','2,8':'park','7,5':'garden','5,5':'plaza','4,4':'garden','5,4':'garden','6,4':'garden','4,5':'garden','6,5':'garden','4,6':'garden','5,6':'garden','6,6':'garden','5,8':'garage','9,6':'dealer','9,9':'lot','1,1':'mall','9,4':'airport','1,9':'gas','7,9':'jobs','7,7':'garden','1,3':'groc','1,7':'rest','3,1':'gift','3,9':'bank','5,2':'cloth','7,1':'cafe'};
 
 /* ===== الأرض ===== */
-(function(){const G=W+200,K2=2048,k=K2/G,c=document.createElement('canvas');c.width=c.height=K2;const x=c.getContext('2d');
+(function(){const G=W+200,K2=4096,k=K2/G,c=document.createElement('canvas');c.width=c.height=K2;const x=c.getContext('2d');
 const X=v=>(v+100)*k,rc=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(X(a),X(b),w*k,h*k)};
 rc(-100,-100,G,G,'#6cc24a');
 const tileArea=(x0,z0,s,n,base)=>{const t=s/n,c0=parseInt(base.slice(1,3),16),c1=parseInt(base.slice(3,5),16),c2=parseInt(base.slice(5,7),16);
@@ -498,7 +498,7 @@ $('qq').textContent=a+(mul?' × ':' + ')+b+' = ؟';$('oo').innerHTML=[...o].sort
 window.h3=(v,a)=>{if(v==a){sc++;beep(900,.05)}nq()};nq();ivl(()=>{t--;info();if(t<=0)endG('انتهى الوقت! ✅ '+sc,sc*25)},1000)}
 
 /* ===== المتاجر والبنك ===== */
-const SHOPS={groc:{n:'🛒 بقالة',it:[['🍎 تفاح',10],['🥖 خبز',8],['🥛 حليب',12]]},cloth:{n:'👗 محل ملابس',it:[['👕 قميص',60],['🧢 قبعة',45],['👟 حذاء',90]]},cafe:{n:'☕ مقهى',it:[['☕ قهوة',15],['🧁 كيك',20]]},rest:{n:'🍔 مطعم',it:[['🍔 برجر',30],['🍕 بيتزا',40]]},gift:{n:'🎁 متجر هدايا',it:[['🎁 هدية',50],['🧸 دبدوب',70],['🌹 وردة',25]]},veg:{n:'🥕 بائع الخضار',it:[['🥕 جزر',6],['🧺 سلة',35]]},jew:{n:'💍 بائع المجوهرات',it:[['💍 خاتم',120],['📿 عقد',80]]},ice:{n:'🍦 كشك الآيس كريم',it:[['🍦 آيس كريم',12],['🎈 بالون',8]]},ballon:{n:'🎈 بائع البالونات',it:[['🎈 بالون',8],['🎀 شريط',10]]},mall:{n:'🏬 المول',it:[['🧥 جاكيت',120],['🕶️ نظارة',40],['📱 جوال',900],['🎮 جهاز ألعاب',600]]},gas:{n:'⛽ محطة البنزين',it:[['🥤 مشروب',5],['🍫 شوكولاتة',7],['🧼 منظف سيارة',25]]}};
+const SHOPS={groc:{n:'🛒 بقالة',it:[['🍎 تفاح',10],['🥖 خبز',8],['🥛 حليب',12]]},cloth:{n:'👗 محل ملابس',it:[['👕 قميص',60],['🧢 قبعة',45],['👟 حذاء',90]]},cafe:{n:'☕ مقهى',it:[['☕ قهوة',15],['🧁 كيك',20]]},rest:{n:'🍔 مطعم',it:[['🍔 برجر',30],['🍕 بيتزا',40]]},gift:{n:'🎁 متجر هدايا',it:[['🎁 هدية',50],['🧸 دبدوب',70],['🌹 وردة',25]]},veg:{n:'🥕 بائع الخضار',it:[['🥕 جزر',6],['🧺 سلة',35]]},jew:{n:'💍 بائع المجوهرات',it:[['💍 خاتم',120],['📿 عقد',80]]},ice:{n:'🍦 كشك الآيس كريم',it:[['🍦 آيس كريم',12],['🎈 بالون',8]]},ballon:{n:'🎈 بائع البالونات',it:[['🎈 بالون',8],['🎀 شريط',10]]},mall:{n:'🏬 المول',it:[['🧥 جاكيت',120],['🕶️ نظارة',40],['📱 جوال',900],['🎮 جهاز ألعاب',600],['🔫 مسدس',300],['🎯 بندقية',900],['💥 شوزن',700]]},gas:{n:'⛽ محطة البنزين',it:[['🥤 مشروب',5],['🍫 شوكولاتة',7],['🧼 منظف سيارة',25]]}};
 const ITEM_PRICE={};Object.values(SHOPS).forEach(s=>s.it.forEach(([n,p])=>ITEM_PRICE[n]=p));
 const INV={};let SHOP_NOW=null;
 function openShop(k){SHOP_NOW=k;const s=SHOPS[k];let h='<h2>'+s.n+'</h2><div class=shl>';
@@ -615,6 +615,46 @@ function airTower(cx,cz){const x=cx+13.5,z=cz+12;
  const ant=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,3,6),L(0x444444));ant.position.set(x,18.5,z);scene.add(ant);
  addB(x,z,2.6,2.6,14.4)}
 
+
+/* ===== الأسلحة ===== */
+const WEAPONS={pistol:{name:'مسدس',dmg:40,range:70,rate:.35},rifle:{name:'بندقية',dmg:70,range:120,rate:.18},shotgun:{name:'شوزن',dmg:90,range:28,rate:.8}};
+const WPN={'🔫 مسدس':'pistol','🎯 بندقية':'rifle','💥 شوزن':'shotgun'};
+function equipW(n){const k=WPN[n];if(!k)return;S.weapon=(S.weapon===k)?null:k;toast(S.weapon?'🔫 جهّزت '+WEAPONS[S.weapon].name+' — اضغط X أو زر 🔫 للإطلاق':'تم إخفاء السلاح');openBag()}
+let lastShot=0;
+function fire(){if(!started||ui||S.car)return;const w=WEAPONS[S.weapon];if(!w){toast('🔫 جهّز سلاح من الشنطة أولًا');return}
+ const now=performance.now()/1000;if(now-lastShot<w.rate)return;lastShot=now;
+ const sn2=Math.sin(cy),cs2=Math.cos(cy),cp2=Math.cos(cp),sp2=Math.sin(cp);
+ const dx=-sn2*cp2,dy=-sp2,dz=-cs2*cp2;
+ const ox=S.x,oy=S.y+3,oz=S.z;
+ const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ox+dx,oy+dy,oz+dz),new THREE.Vector3(ox+dx*w.range,oy+dy*w.range,oz+dz*w.range)]);
+ const ln=new THREE.Line(g,new THREE.LineBasicMaterial({color:0xffe9a8,transparent:true,opacity:.9}));scene.add(ln);
+ setTimeout(()=>{scene.remove(ln);g.dispose()},90);
+ beep(180,.05);
+ let hit=null,hd=w.range;
+ const check=(x,z,r,obj,y)=>{const vx=x-ox,vy=y-oy,vz=z-oz;const t=vx*dx+vy*dy+vz*dz;if(t<0||t>hd)return;const px=vx-dx*t,py=vy-dy*t,pz=vz-dz*t;if(Math.hypot(px,py,pz)<r){hd=t;hit=obj}};
+ npcs.forEach(n=>check(n.m.position.x,n.m.position.z,1.2,{type:'npc',n},1.5));
+ CARS.forEach(c=>{if(c.kind=='police')check(c.x,c.z,2.2,{type:'car',c},1.2)});
+ if(!hit)return;
+ if(hit.type=='npc'){const n=hit.n;scene.remove(n.m);npcs.splice(npcs.indexOf(n),1);
+  if(n===tgt){clearM();setTimeout(newM,1200);toast('💔 المريض/الهدف اتصاب')}
+  crime(1,'🔫 أصبت مواطن!');setTimeout(spawnWalker,6000)}
+ else{const c=hit.c;c.hp=(c.hp||100)-w.dmg;beep(400,.1);
+  if(c.hp<=0){removeCar(c);S.stars=Math.max(0,S.stars-1);toast('🚓 أسقطت سيارة شرطة')}else toast('💥 أصبت سيارة الشرطة')}
+}
+
+/* ===== مزامنة الملابس ===== */
+function netLook(){if(SOCK&&SOCK.connected)SOCK.emit('look',S.look)}
+
+/* ===== اتصل بخويي ===== */
+function openFriends(){const list=[...REMOTE.entries()];let h='<h2>📞 اتصل بخويي</h2>';
+ if(!list.length)h+='<p>ما فيه لاعبين متصلين الحين</p>';
+ list.forEach(([id,r])=>{const nm=String(r.name||'لاعب').replace(/[<>"'\\]/g,'');h+='<div class=row><span>'+nm+'</span><span><button class=sm onclick="teleportTo(\''+id+'\')">روح له</button></span></div>'});
+ h+='<div class=gl><button class=sm onclick=openPhone()>رجوع</button><button class=sm onclick=mgClose()>إغلاق</button></div>';mgOpen(h)}
+function teleportTo(id){const r=REMOTE.get(id);if(!r)return;
+ S.x=r.m.position.x;S.z=r.m.position.z+3;S.y=0;S.vx=S.vz=0;
+ if(S.car){S.car.x=S.x;S.car.z=S.z}
+ mgClose();toast('📍 وصلت عند '+(r.name||'خويك'))}
+
 /* ===== المطار والمحطة ===== */
 function airplane(x,z){const f=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.4,16,14),L(0xf4f4f4));f.rotation.z=Math.PI/2;f.position.set(x,2.2,z);f.castShadow=true;scene.add(f);
  BX(12,.3,2.6,L(0xdddddd),x,1.9,z);BX(.4,3,.3,L(0x0b3d91),x-7,3.6,z);addB(x,z,16,3,3.2)}
@@ -637,11 +677,11 @@ const WEAR={'👕 قميص':{shirt:'#4ecdc4'},'🧢 قبعة':{hat:'cap'},'👟 
 function isWorn(n){const k=Object.keys(WEAR[n])[0];return S.look[k]===WEAR[n][k]}
 function wearItem(n){if(!WEAR[n])return;const k=Object.keys(WEAR[n])[0];const was=isWorn(n);
  S.look[k]=was?({shirt:'#ffc145',jacket:0,hat:'',glasses:false,shoe:0x222222})[k]:WEAR[n][k];
- setTeam('cit');toast(was?'👕 خلعت '+n:'👕 لبست '+n);saveGame();openBag()}
+ setTeam('cit');netLook();toast(was?'👕 خلعت '+n:'👕 لبست '+n);saveGame();openBag()}
 function openBag(){let h='<h2>🎒 الشنطة</h2><p>💰 '+Math.floor(S.money)+' ريال • ⚡ الطاقة '+Math.round(S.st)+'%</p><div class=shl>';
  const have=Object.keys(INV).filter(n=>INV[n]>0);
  if(!have.length)h+='<p>الشنطة فاضية</p>';
- have.forEach(n=>{let b='';if(FOOD.includes(n))b+='<button class=sm onclick="eatItem(\''+n+'\')">أكل</button> ';
+ have.forEach(n=>{let b='';if(WPN[n])b+='<button class=sm onclick=\"equipW(\''+n+'\')\">'+(S.weapon===WPN[n]?'إخفاء':'تجهيز')+'</button> ';if(FOOD.includes(n))b+='<button class=sm onclick="eatItem(\''+n+'\')">أكل</button> ';
   if(WEAR[n])b+='<button class=sm onclick="wearItem(\''+n+'\')">'+(isWorn(n)?'خلع':'لبس')+'</button> ';
   b+='<button class=sm onclick="sellBag(\''+n+'\')">بيع '+Math.floor((ITEM_PRICE[n]||0)*.7)+'</button>';
   h+='<div class=row><span>'+n+' × '+INV[n]+'</span><span>'+b+'</span></div>'});
@@ -654,7 +694,7 @@ function openBagOld(){let h='<h2>🎒 الشنطة</h2><p>💰 '+Math.floor(S.mo
 function eatItem(n){if(!INV[n])return;INV[n]--;S.st=Math.min(100,S.st+25);beep(700,.08);toast('😋 أكلت '+n+' — طاقتك زادت');openBag()}
 function openPhone(){const cars=GARAGE.length,stored=GARAGE.find(g=>!g.car);
  mgOpen('<h2>📱 الجوال</h2><div class=shl><div class=row><span>💰 المحفظة</span><span>'+Math.floor(S.money)+' ريال</span></div><div class=row><span>🏦 الادخار</span><span>'+Math.floor(S.bank)+' ريال</span></div><div class=row><span>🏠 البيوت</span><span>'+owned().length+'</span></div><div class=row><span>🚗 السيارات</span><span>'+cars+'</span></div><div class=row><span>💼 الوظيفة</span><span>'+JOBN[S.team]+'</span></div><div class=row><span>🕒 الوقت</span><span>'+$('clk').textContent.replace('🕒 ','')+'</span></div></div>'
- +'<div class=gl><button class=sm onclick="phoneCall()">🚗 استدعاء سيارة من الجراج</button><button class=sm onclick="mgClose();toggleCh()">📋 التحديات</button><button class=sm onclick="saveGame();toast(\'💾 تم حفظ اللعبة\');mgClose()">💾 حفظ الآن</button><button class=sm onclick=mgClose()>إغلاق</button></div>')}
+ +'<div class=gl><button class=sm onclick="openFriends()">📞 اتصل بخويي</button><button class=sm onclick="phoneCall()">🚗 استدعاء سيارة من الجراج</button><button class=sm onclick="mgClose();toggleCh()">📋 التحديات</button><button class=sm onclick="saveGame();toast(\'💾 تم حفظ اللعبة\');mgClose()">💾 حفظ الآن</button><button class=sm onclick=mgClose()>إغلاق</button></div>')}
 function phoneCall(){const g=GARAGE.find(q=>!q.car);if(!g){toast('ما عندك سيارة مخزّنة');mgClose();return}mgClose();garageAct(GARAGE.indexOf(g))}
 function openJobs(){mgOpen('<h2>🧾 مركز التوظيف</h2><p>وظيفتك الحالية: '+JOBN[S.team]+'</p><div class=gl>'+['doc','pol','taxi','work','cit'].map(t=>'<button class=sm onclick="takeJob(\''+t+'\')">'+JOBN[t]+(SAL[t]?' — راتب '+SAL[t]+' كل دقيقة':'')+'</button>').join('')+'<button class=sm onclick=mgClose()>إغلاق</button></div>')}
 function takeJob(t){mgClose();setTeam(t);toast('💼 بدأت العمل: '+JOBN[t]);saveGame()}
@@ -685,6 +725,7 @@ function netConnect(name){if(typeof io==='undefined')return;
  SOCK.on('state',s=>{const r=REMOTE.get(s.id);if(!r)return;r.tx=s.x;r.tz=s.z;r.th=s.h;r.sp=s.sp;r.inCar=s.inCar});
  SOCK.on('leave',id=>{const r=REMOTE.get(id);if(r){scene.remove(r.m);scene.remove(r.tag);REMOTE.delete(id)}});
  SOCK.on('chat',c=>addChat(c.name,c.text));
+ SOCK.on('look',d=>{const r=REMOTE.get(d.id);if(!r)return;const x=r.m.position.x,z=r.m.position.z,nm=r.name,hh=r.th,ic=r.inCar;scene.remove(r.m);scene.remove(r.tag);REMOTE.delete(d.id);remoteSpawn(d.id,{name:nm,look:d.look,x,z,h:hh,inCar:ic})});
  const ci=$('chatIn');
  ci.addEventListener('keydown',e=>{e.stopPropagation();
   if(e.key==='Enter'){const t=ci.value.trim();if(t)SOCK.emit('chat',t);ci.value='';ci.blur()}
@@ -702,11 +743,12 @@ if(e.code=='KeyE'||e.code=='KeyF')doAct();
 if(e.code=='KeyT')toggleCh();
 if(e.code=='KeyR')tryRefuel();
 if(e.code=='KeyB')openBag();
+if(e.code=='KeyX')fire();
 if(e.code=='KeyP')openPhone();
 if(e.code=='KeyH'&&!S.car){const h=owned()[0];if(h){S.x=h.sx;S.z=h.sz+h.fz*3;S.y=0;S.vx=S.vz=0;toast('🏡 رجعت للبيت')}else toast('ما عندك بيت بعد!')}
 if(e.code=='Space')e.preventDefault()});
 addEventListener('keyup',e=>K[e.code]=0);
-const cvs=$('c');cvs.addEventListener('mousedown',()=>drag=1);addEventListener('mouseup',()=>drag=0);
+const cvs=$('c');cvs.addEventListener('mousedown',e=>{if(e.button===0){fire();return}if(e.button===2)drag=1});addEventListener('mouseup',()=>drag=0);
 addEventListener('mousemove',e=>{if(drag&&started&&!ui){cy-=INVX*e.movementX*.005;cp=cl(cp+INVY*e.movementY*.005,.05,1.3)}});
 cvs.addEventListener('wheel',e=>{cdT=cl(cdT+e.deltaY*.02,6,45)},{passive:true});cvs.addEventListener('contextmenu',e=>e.preventDefault());
 const tch={},jr=$('jr');
@@ -716,7 +758,7 @@ if(o.L){jx=cl((t.clientX-o.ox)/45,-1,1);jz=cl(-(t.clientY-o.oy)/45,-1,1);jr.firs
 else{cy-=INVX*(t.clientX-o.x)*.007;cp=cl(cp+INVY*(t.clientY-o.y)*.007,.05,1.3);o.x=t.clientX;o.y=t.clientY}}},{passive:false});
 addEventListener('touchend',e=>{for(const t of e.changedTouches){const o=tch[t.identifier];if(o&&o.L){jx=jz=0;jr.style.display='none';jr.firstChild.style.transform=''}delete tch[t.identifier]}});
 const tb=(id,dn,up)=>{const e=$(id);e.addEventListener('touchstart',ev=>{ev.preventDefault();dn()},{passive:false});e.addEventListener('touchend',ev=>{ev.preventDefault();up&&up()},{passive:false})};
-tb('bj',()=>K.Space=1,()=>K.Space=0);tb('be',doAct);tb('br',()=>runB=!runB);
+tb('bj',()=>K.Space=1,()=>K.Space=0);tb('bf',fire);tb('be',doAct);tb('br',()=>runB=!runB);
 function go(t,cont){try{AC=new(window.AudioContext||webkitAudioContext)()}catch(e){}$('start').style.display='none';started=true;
  let team=t;if(cont){const r=loadGame();if(r)team=r}
  initCh();setTeam(team);saveGame();
