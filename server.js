@@ -32,21 +32,32 @@ function cleanMsgs(list){return (Array.isArray(list)?list:[]).slice(-10).map(m=>
   role: m.role==='assistant'?'assistant':'user',
   content: String(m.content||'').slice(0,500)})).filter(m=>m.content)}
 
+const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+
 async function askGemini(key, msgs){
   const contents = msgs.map(m=>({role: m.role==='assistant'?'model':'user', parts:[{text:m.content}]}));
-  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: SYSTEM_AI }] },
-      contents,
-      generationConfig: { maxOutputTokens: 300 }
-    })
-  });
-  const j = await r.json();
-  if (!r.ok) return 'خطأ من Gemini: ' + ((j.error && j.error.message) || r.status);
-  const parts = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
-  return parts.map(p => p.text || '').join('').trim() || 'ما قدرت أرد الحين، جرب مرة ثانية.';
+  let lastErr = '';
+  for (const model of GEMINI_MODELS) {
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: SYSTEM_AI }] },
+        contents,
+        generationConfig: { maxOutputTokens: 300 }
+      })
+    });
+    const j = await r.json();
+    if (r.ok) {
+      const parts = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
+      return parts.map(p => p.text || '').join('').trim() || 'ما قدرت أرد الحين، جرب مرة ثانية.';
+    }
+    lastErr = (j.error && j.error.message) || String(r.status);
+    // إذا الموديل مو متاح نجرب اللي بعده، غير هيك نوقف ونعرض الخطأ
+    const modelIssue = /no longer available|not found|not supported|does not exist/i.test(lastErr);
+    if (!modelIssue) break;
+  }
+  return 'خطأ من Gemini: ' + lastErr;
 }
 
 async function askClaude(key, msgs){
