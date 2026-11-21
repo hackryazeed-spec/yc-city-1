@@ -105,7 +105,7 @@ const BX=(w,h,d,m,x,y,z,p)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d)
 function cvT(s,f){const c=document.createElement('canvas');c.width=c.height=s;f(c.getContext('2d'));return new THREE.CanvasTexture(c)}
 
 /* ===== خريطة المدينة ===== */
-const SPC={'2,2':'hosp','8,8':'hosp','1,5':'pol','9,2':'arc','2,8':'park','7,5':'garden','5,5':'plaza','4,4':'garden','5,4':'garden','6,4':'garden','4,5':'garden','6,5':'garden','4,6':'garden','5,6':'garden','6,6':'garden','5,8':'garage','9,6':'dealer','9,9':'lot','1,1':'mall','9,4':'airport','1,9':'gas','7,9':'jobs','7,7':'garden','1,3':'groc','1,7':'rest','3,1':'gift','3,9':'bank','5,2':'cloth','7,1':'cafe'};
+const SPC={'2,2':'hosp','8,8':'hosp','1,5':'pol','9,2':'arc','2,8':'park','7,5':'garden','5,5':'plaza','4,4':'garden','5,4':'garden','6,4':'garden','4,5':'garden','6,5':'garden','4,6':'garden','5,6':'garden','6,6':'garden','5,8':'garage','9,6':'dealer','9,9':'lot','1,1':'mall','9,4':'airport','1,9':'gas','7,9':'jobs','7,7':'garden','1,3':'groc','1,7':'rest','3,1':'gift','3,9':'bank','5,2':'cloth','7,1':'cafe','2,4':'guns'};
 
 /* ===== الأرض ===== */
 (function(){const G=W+200,K2=4096,k=K2/G,c=document.createElement('canvas');c.width=c.height=K2;const x=c.getContext('2d');
@@ -373,6 +373,7 @@ for(let i=0;i<N;i++)for(let j=0;j<N;j++){const cx=cxOf(i),cz=cxOf(j),t=SPC[i+','
    
    
    }
+ else if(t=='guns')shopCell(cx,cz,'guns','🔫 محل الأسلحة','#3a0d0d','#ffffff',24,8,14,1,'🔫 تاجر الأسلحة','#3a0d0d');
  else if(t=='mall')shopCell(cx,cz,'mall','🏬 المول','#7b2cbf','#ffffff',26,12,16,4,'🏬 موظف المول','#7b2cbf');
  else if(t=='airport'){shopCell(cx,cz,'airport','✈️ مطار','#0b3d91','#ffffff',24,10,14,3,'✈️ موظف الرحلات','#0b3d91');airplane(cx,cz+12);airTower(cx,cz)}
  else if(t=='gas')gasStation(cx,cz);
@@ -498,7 +499,7 @@ $('qq').textContent=a+(mul?' × ':' + ')+b+' = ؟';$('oo').innerHTML=[...o].sort
 window.h3=(v,a)=>{if(v==a){sc++;beep(900,.05)}nq()};nq();ivl(()=>{t--;info();if(t<=0)endG('انتهى الوقت! ✅ '+sc,sc*25)},1000)}
 
 /* ===== المتاجر والبنك ===== */
-const SHOPS={groc:{n:'🛒 بقالة',it:[['🍎 تفاح',10],['🥖 خبز',8],['🥛 حليب',12]]},cloth:{n:'👗 محل ملابس',it:[['👕 قميص',60],['🧢 قبعة',45],['👟 حذاء',90]]},cafe:{n:'☕ مقهى',it:[['☕ قهوة',15],['🧁 كيك',20]]},rest:{n:'🍔 مطعم',it:[['🍔 برجر',30],['🍕 بيتزا',40]]},gift:{n:'🎁 متجر هدايا',it:[['🎁 هدية',50],['🧸 دبدوب',70],['🌹 وردة',25]]},veg:{n:'🥕 بائع الخضار',it:[['🥕 جزر',6],['🧺 سلة',35]]},jew:{n:'💍 بائع المجوهرات',it:[['💍 خاتم',120],['📿 عقد',80]]},ice:{n:'🍦 كشك الآيس كريم',it:[['🍦 آيس كريم',12],['🎈 بالون',8]]},ballon:{n:'🎈 بائع البالونات',it:[['🎈 بالون',8],['🎀 شريط',10]]},mall:{n:'🏬 المول',it:[['🧥 جاكيت',120],['🕶️ نظارة',40],['📱 جوال',900],['🎮 جهاز ألعاب',600],['🔫 مسدس',300],['🎯 بندقية',900],['💥 شوزن',700]]},gas:{n:'⛽ محطة البنزين',it:[['🥤 مشروب',5],['🍫 شوكولاتة',7],['🧼 منظف سيارة',25]]}};
+const SHOPS={groc:{n:'🛒 بقالة',it:[['🍎 تفاح',10],['🥖 خبز',8],['🥛 حليب',12]]},cloth:{n:'👗 محل ملابس',it:[['👕 قميص',60],['🧢 قبعة',45],['👟 حذاء',90]]},cafe:{n:'☕ مقهى',it:[['☕ قهوة',15],['🧁 كيك',20]]},rest:{n:'🍔 مطعم',it:[['🍔 برجر',30],['🍕 بيتزا',40]]},gift:{n:'🎁 متجر هدايا',it:[['🎁 هدية',50],['🧸 دبدوب',70],['🌹 وردة',25]]},veg:{n:'🥕 بائع الخضار',it:[['🥕 جزر',6],['🧺 سلة',35]]},jew:{n:'💍 بائع المجوهرات',it:[['💍 خاتم',120],['📿 عقد',80]]},ice:{n:'🍦 كشك الآيس كريم',it:[['🍦 آيس كريم',12],['🎈 بالون',8]]},ballon:{n:'🎈 بائع البالونات',it:[['🎈 بالون',8],['🎀 شريط',10]]},mall:{n:'🏬 المول',it:[['🧥 جاكيت',120],['🕶️ نظارة',40],['📱 جوال',900],['🎮 جهاز ألعاب',600]]},guns:{n:'🔫 محل الأسلحة',it:[['🔫 مسدس',300],['🎯 بندقية',900],['💥 شوزن',700]]},gas:{n:'⛽ محطة البنزين',it:[['🥤 مشروب',5],['🍫 شوكولاتة',7],['🧼 منظف سيارة',25]]}};
 const ITEM_PRICE={};Object.values(SHOPS).forEach(s=>s.it.forEach(([n,p])=>ITEM_PRICE[n]=p));
 const INV={};let SHOP_NOW=null;
 function openShop(k){SHOP_NOW=k;const s=SHOPS[k];let h='<h2>'+s.n+'</h2><div class=shl>';
