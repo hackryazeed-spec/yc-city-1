@@ -59,6 +59,13 @@ io.on('connection', (sock) => {
     sock.broadcast.emit('state', { id: sock.id, x: p.x, z: p.z, h: p.h, sp: p.sp, inCar: p.inCar });
   });
 
+  sock.on('look', (l) => {
+    const p = players[sock.id];
+    if (!p || !l || typeof l !== 'object') return;
+    p.look = l;
+    io.emit('look', { id: sock.id, look: l });
+  });
+
   sock.on('chat', (t) => {
     const p = players[sock.id];
     if (!p) return;
