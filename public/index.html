@@ -594,4 +594,102 @@
 
                 // التوجيه (يعمل فقط عندما تتحرك السيارة)
                 if (Math.abs(car.speed) > 0.05) {
-                    const turnSpeed = (keys['Space'] ? 0.06 : 0.04) * (car.speed > 0 ? 1 : -1
+                    const turnSpeed = (keys['Space'] ? 0.06 : 0.04) * (car.speed > 0 ? 1 : -1);
+                    if (keys['KeyA'] || keys['ArrowLeft']) car.mesh.rotation.y += turnSpeed;
+                    if (keys['KeyD'] || keys['ArrowRight']) car.mesh.rotation.y -= turnSpeed;
+                }
+
+                const nextX = car.mesh.position.x + Math.sin(car.mesh.rotation.y) * car.speed;
+                const nextZ = car.mesh.position.z + Math.cos(car.mesh.rotation.y) * car.speed;
+
+                // تصادم السيارة مع المباني
+                if (!checkCollision(nextX, car.mesh.position.z, 2.5)) {
+                    car.mesh.position.x = nextX;
+                } else {
+                    car.speed = -car.speed * 0.5; // ارتداد عند الاصطدام
+                }
+
+                if (!checkCollision(car.mesh.position.x, nextZ, 2.5)) {
+                    car.mesh.position.z = nextZ;
+                } else {
+                    car.speed = -car.speed * 0.5;
+                }
+
+                player.position.copy(car.mesh.position);
+                document.getElementById('speedometer').innerText = Math.abs(Math.round(car.speed * 110)) + ' KM/H';
+            }
+
+            // --- ذكاء اصطناعي لمطاردة الشرطة ---
+            if (wantedLevel > 0) {
+                spawnPoliceCar();
+                const targetPos = inCar ? currentCar.mesh.position : player.position;
+
+                policeCars.forEach(pCar => {
+                    if (pCar === currentCar) return; // إذا سرق اللاعب سيارة الشرطة نفسها
+
+                    // وميض أضواء الشرطة
+                    const time = Date.now() * 0.01;
+                    pCar.mesh.userData.redLight.visible = Math.sin(time) > 0;
+                    pCar.mesh.userData.blueLight.visible = Math.sin(time) <= 0;
+
+                    // التوجه نحو اللاعب
+                    const dx = targetPos.x - pCar.mesh.position.x;
+                    const dz = targetPos.z - pCar.mesh.position.z;
+                    const targetAngle = Math.atan2(dx, dz);
+                    
+                    pCar.mesh.rotation.y = targetAngle;
+                    const nextX = pCar.mesh.position.x + Math.sin(targetAngle) * 0.9;
+                    const nextZ = pCar.mesh.position.z + Math.cos(targetAngle) * 0.9;
+
+                    if (!checkCollision(nextX, nextZ, 2.5)) {
+                        pCar.mesh.position.set(nextX, 0, nextZ);
+                    }
+
+                    // اصطدام الشرطة باللاعب
+                    if (pCar.mesh.position.distanceTo(targetPos) < 4.5) {
+                        health = Math.max(0, health - 0.5);
+                        document.getElementById('health-bar').style.width = health + '%';
+                        if (health <= 0) {
+                            alert("تم القبض عليك! (WASTED / BUSTED)");
+                            location.reload();
+                        }
+                    }
+                });
+            }
+
+            // --- جمع النقود ---
+            const activePos = inCar ? currentCar.mesh.position : player.position;
+            for (let i = moneyPickups.length - 1; i >= 0; i--) {
+                const m = moneyPickups[i];
+                m.rotation.y += 0.05;
+                if (activePos.distanceTo(m.position) < 3.5) {
+                    scene.remove(m);
+                    moneyPickups.splice(i, 1);
+                    money += 500;
+                    updateHUD();
+                }
+            }
+
+            // --- تحديث موقع الكاميرا (Third Person Camera) ---
+            const target = inCar ? currentCar.mesh.position : player.position;
+            const camDist = inCar ? 14 : 9;
+            const camHeight = inCar ? 5 : 4;
+
+            camera.position.x = target.x + Math.sin(cameraAngleX) * camDist * Math.cos(cameraAngleY);
+            camera.position.z = target.z + Math.cos(cameraAngleX) * camDist * Math.cos(cameraAngleY);
+            camera.position.y = target.y + camHeight + Math.sin(cameraAngleY) * camDist;
+            
+            camera.lookAt(target.x, target.y + 2, target.z);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+            renderer.render(scene, camera);
+        }
+
+        // بدء التهيئة
+        init();
+    </script>
+</body>
+</html>
